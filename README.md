@@ -51,6 +51,17 @@ option_price = finance_model.Black_Scholes(ticker, option_type, strike_price, ti
 print(f"Black-Scholes {option_type} option price for {ticker}: {option_price}")
 ```
 
+### Historical Simulation
+
+Calculate the Value at Risk for a given stock using the historical simulation method:
+```python
+ticker = 'AAPL'
+confidence_level = 0.95
+
+VaR = finance_model.historical_simulation(ticker, confidence_level)
+print(f"Historical Simulation VaR for AAPL at 95% confidence level: {VaR}")
+```
+
 ## License
 
 This project is licensed under the MIT License.

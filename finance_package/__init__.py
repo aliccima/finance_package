@@ -56,7 +56,7 @@ class FinanceModels:
 
         Example:
         -------
-        >>> api_client._request('/beta', ticker='AAPL')
+        >>> finance_model._request('/beta', ticker='AAPL')
         {'beta': 1.2}  # Example output representing the beta value for the given ticker
         """
 
@@ -146,6 +146,7 @@ class FinanceModels:
         log_returns = np.log(prices_yr[:-1] / prices_yr[1:])
         sigma = np.std(log_returns) * np.sqrt(252)  # annualize the volatility
 
+        # calculate variables for the model
         S = self._request("/prices", ticker=ticker)["prices"][0]
         K = strike_price
         T = time_to_maturity
@@ -160,3 +161,44 @@ class FinanceModels:
             price = K * np.exp(-self.risk_free * T) * norm.cdf(-d2) - S * norm.cdf(-d1)
 
         return price
+
+    def historical_simulation(
+        self, ticker: str, confidence_level: float = 0.95
+    ) -> float:
+        """
+        Calculate the Value at Risk (VaR) for a given stock using the historical simulation method.
+
+        The historical simulation method estimates VaR based on historical price movements of the
+        stock. It assumes that historical returns are representative of future returns and uses these
+        to simulate potential future losses.
+
+        Parameters:
+        ----------
+        ticker : str
+            The ticker symbol of the stock for which to calculate the VaR.
+        confidence_level : float, optional
+            The confidence level for the VaR calculation, by default 0.95 (95%).
+
+        Returns:
+        -------
+        float
+            The estimated Value at Risk (VaR) at the specified confidence level. VaR is given as a
+            negative number representing the maximum expected loss.
+
+        Example:
+        -------
+        >>> VaR = finance_model.historical_simulation('AAPL', 0.95)
+        >>> print(f"Historical Simulation VaR for AAPL at 95% confidence level: {VaR}")
+        Historical Simulation VaR for AAPL at 95% confidence level: -0.045  # Example output
+        """
+        prices_yr = self._request("/prices", ticker=ticker, limit=252)["prices"]
+        prices_yr = np.array(prices_yr)
+
+        # calculate log returns
+        log_returns = np.log(prices_yr[:-1] / prices_yr[1:])
+        sorted_log_returns = np.sort(log_returns)
+
+        # Calculate the VaR
+        index = int((1 - confidence_level) * len(sorted_log_returns))
+        VaR = sorted_log_returns[index]
+        return VaR
