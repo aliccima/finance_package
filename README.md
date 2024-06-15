@@ -10,11 +10,11 @@ The `FinanceModels` package provides a set of financial models and operations, i
 * Black-Scholes Model: Calculate the theoretical price of call and put options.
 * API Integration: Fetch financial data such as stock prices, beta values, risk-free rate, and market returns from an external API.
 
-## Installation (with poetry)
+## Installation
 
-To install the `FinanceModels` package, use the following `poetry` command:
+To install the `FinanceModels` package, use the following command:
 ```sh
-poetry add git+https://github.com/aliccima/finance_package.git
+pip install git+https://github.com/aliccima/finance_package.git
 ```
 
 ## Usage
