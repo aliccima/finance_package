@@ -7,17 +7,17 @@ class FinanceModels:
     """
     A class to encapsulate various financial models and operations, interfacing with an external API for data.
 
-    This class provides methods to calculate financial metrics such as the Capital Asset Pricing Model (CAPM)
-    and the Black-Scholes option pricing model. It initializes with an API URI and retrieves essential financial
-    data such as the risk-free rate and market return.
+    This class provides methods to calculate financial metrics such as the Capital Asset Pricing Model (CAPM),
+    Black-Scholes option pricing model and historical simulation to calculate Value at Risk. It initializes with an API
+    URI and retrieves essential financial data such as the risk-free rate and market return.
     """
 
     def __init__(self, api_uri: str) -> None:
         """
         Initialize the FinanceModels class with the given API URI.
 
-        This constructor sets the base URI for the API and retrieves the initial values for the risk-free rate
-        and market return by making API requests.
+        This constructor sets the base URI for the API and retrieves the initial values for the risk-free rate and
+        market return by making API requests.
 
         Parameters:
         ----------
@@ -37,9 +37,9 @@ class FinanceModels:
         """
         Send a POST request to the specified API endpoint with a JSON body.
 
-        This method constructs and sends a POST request to the given API endpoint using the
-        base URI that was given as `api_uri`. It includes a JSON body composed of keyword arguments
-        passed to the method. The response is expected to be in JSON format.
+        This method constructs and sends a POST request to the given API endpoint using the base URI that was given as
+        `api_uri`. It includes a JSON body composed of keyword arguments passed to the method. The response is expected
+        to be in JSON format.
 
         Parameters:
         ----------
@@ -75,9 +75,8 @@ class FinanceModels:
         """
         Calculate the alpha value of a given stock using the Capital Asset Pricing Model (CAPM).
 
-        The CAPM formula is used to determine the expected return of an asset based on its beta and
-        the expected market return. The alpha is the difference between the real return and the
-        theoretical return predicted by CAPM.
+        The CAPM formula is used to determine the expected return of an asset based on its beta and the expected market
+        return. The alpha is the difference between the real return and the theoretical return predicted by CAPM.
 
         Parameters:
         ----------
@@ -87,9 +86,9 @@ class FinanceModels:
         Returns:
         -------
         float
-            The alpha value, which is the difference between the real return and the theoretical
-            return of the stock. A positive alpha indicates that the stock has performed better
-            than predicted by CAPM, while a negative alpha indicates underperformance.
+            The alpha value, which is the difference between the real return and the theoretical return of the stock. A
+            positive alpha indicates that the stock has performed better than predicted by CAPM, while a negative alpha
+            indicates underperformance.
 
         Example:
         -------
@@ -114,9 +113,9 @@ class FinanceModels:
         """
         Calculate the Black-Scholes price for a call or put option.
 
-        The Black-Scholes model is used to determine the theoretical price of call and
-        put options based on various parameters, including the underlying asset price, strike
-        price, time to maturity, risk-free rate, and volatility.
+        The Black-Scholes model is used to determine the theoretical price of call and put options based on various
+        parameters, including the underlying asset price, strike price, time to maturity, risk-free rate, and
+        volatility.
 
         Parameters:
         ----------
@@ -168,9 +167,8 @@ class FinanceModels:
         """
         Calculate the Value at Risk (VaR) for a given stock using the historical simulation method.
 
-        The historical simulation method estimates VaR based on historical price movements of the
-        stock. It assumes that historical returns are representative of future returns and uses these
-        to simulate potential future losses.
+        The historical simulation method estimates VaR based on historical price movements of the stock. It assumes that
+        historical returns are representative of future returns and uses these to simulate potential future losses.
 
         Parameters:
         ----------
@@ -182,14 +180,13 @@ class FinanceModels:
         Returns:
         -------
         float
-            The estimated Value at Risk (VaR) at the specified confidence level. VaR is given as a
-            negative number representing the maximum expected loss.
+            The estimated Value at Risk (VaR) at the specified confidence level.
 
         Example:
         -------
         >>> VaR = finance_model.historical_simulation('AAPL', 0.95)
         >>> print(f"Historical Simulation VaR for AAPL at 95% confidence level: {VaR}")
-        Historical Simulation VaR for AAPL at 95% confidence level: -0.045  # Example output
+        Historical Simulation VaR for AAPL at 95% confidence level: 0.045  # Example output
         """
         prices_yr = self._request("/prices", ticker=ticker, limit=252)["prices"]
         prices_yr = np.array(prices_yr)
@@ -201,4 +198,4 @@ class FinanceModels:
         # Calculate the VaR
         index = int((1 - confidence_level) * len(sorted_log_returns))
         VaR = sorted_log_returns[index]
-        return VaR
+        return np.abs(VaR)

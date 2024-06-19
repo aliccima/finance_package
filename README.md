@@ -8,6 +8,7 @@ The `FinanceModels` package provides a set of financial models and operations, i
 
 * CAPM Calculation: Compute the alpha value of a given stock using the Capital Asset Pricing Model.
 * Black-Scholes Model: Calculate the theoretical price of call and put options.
+* Historical Simulation model: Compute the Value at Risk using the historical simulation method.
 * API Integration: Fetch financial data such as stock prices, beta values, risk-free rate, and market returns from an external API.
 
 ## Installation
